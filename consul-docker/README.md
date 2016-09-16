@@ -34,21 +34,21 @@ the user and continue.
 ## Scripts
 
 <dl>
-  <dt>```start-consul.sh```</dt>
+  <dt><code>start-consul.sh</code></dt>
   <dd>Setup a Consul cluster in Docker, with the specified number of servers and clients.</dd>
   
-  <dt>```start-proxysql.sh```</dt>
+  <dt><code>start-proxysql.sh</code></dt>
   <dd>Create specified number of ProxySQL containers.</dd>
   
-  <dt>```start-test.sh```</dt>
+  <dt><code>start-test.sh</code></dt>
   <dd>Create a container with clients needed to test ProxySQL and Consul: ping, dig, curl, ssh, mysql.</dd>
   
-  <dt>```register-consul.sh```</dt>
+  <dt><code>register-consul.sh</code></dt>
   <dd>Register any type of service in Consul. Still a bit tricky to use, will improve so that one doesn't need
   to specify service IP or even a running Consul client. We also need a "proxy" container to run curl, use
   test.</dd>
   
-  <dt>```cleanup.sh```</dt>
+  <dt><code>cleanup.sh</code></dt>
   <dd>Destroy containers created with other scripts.</dd>
 </dl>
 
