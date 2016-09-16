@@ -31,6 +31,27 @@ we use ```PARAM=value bash script.sh```.
 Failure tolerant. Of course we stop if a Consul server doesn't start. But if a Consul client doesn't start, we inform
 the user and continue.
 
+## Scripts
+
+<dl>
+  <dt>```start-consul.sh```</dt>
+  <dd>Setup a Consul cluster in Docker, with the specified number of servers and clients.</dd>
+  
+  <dt>```start-proxysql.sh```</dt>
+  <dd>Create specified number of ProxySQL containers.</dd>
+  
+  <dt>```start-test.sh```</dt>
+  <dd>Create a container with clients needed to test ProxySQL and Consul: ping, dig, curl, ssh, mysql.</dd>
+  
+  <dt>```register-consul.sh```</dt>
+  <dd>Register any type of service in Consul. Still a bit tricky to use, will improve so that one doesn't need
+  to specify service IP or even a running Consul client. We also need a "proxy" container to run curl, use
+  test.</dd>
+  
+  <dt>```cleanup.sh```</dt>
+  <dd>Destroy containers created with other scripts.</dd>
+</dl>
+
 ## Examples
 
 Create 2 ProxySQL containers:
