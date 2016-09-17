@@ -287,4 +287,7 @@ docker ps | grep "\b$SERVER_CONTAINER_NAME\|\b$CLIENT_CONTAINER_NAME"
 echo ''
 echo "Consul cluster members:"
 docker exec -t $SERVER_CONTAINER_NAME-1 consul members -detailed
+# expected to fail before 0.7
+echo "Raft info:"
+docker exec -t $SERVER_CONTAINER_NAME-1 consul operator raft -list-peers
 
