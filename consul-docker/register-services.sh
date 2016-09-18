@@ -44,11 +44,12 @@ fi
 function register_container {
         host=$1
         port=$2
-        newserv_container_id=$3
-        newserv_port=$4
-        newserv_id=$5
-        newserv_name=$6
-        newserv_tags=$7
+        proxy_container=$3
+        newserv_container_id=$4
+        newserv_port=$5
+        newserv_id=$6
+        newserv_name=$7
+        newserv_tags=$8
 
         # get container's IP from ID
         ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $newserv_container_id)
@@ -58,9 +59,9 @@ function register_container {
         
         echo "Registering $ip"
         cmd=''
-        if [ ! -z PROXY_CONTAINER ];
+        if [ ! -z $proxy_container ];
         then
-                cmd="docker exec -ti $PROXY_CONTAINER"
+                cmd="docker exec -ti $proxy_container"
         fi
         cmd="$cmd curl http://$host:$port/v1/catalog/service/web \
                 [
@@ -106,7 +107,7 @@ then
                 echo 'ERROR: CONTAINER_ID cannot be combined with SERVICES_IMAGE or SERVICES_NAME. Aborting'
                 exit 1
         fi
-        register_container $consul_host $consul_port $CONTAINER_ID $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
+        register_container $consul_host $consul_port $PROXY_CONTAINER $CONTAINER_ID $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
         exit 0
 fi
 
@@ -143,7 +144,7 @@ cmd="docker ps $filter | tail -n +2 | awk '{ print \$1 }'"
 eval $cmd > $tempfile
 
 while read id; do
-        register_container $consul_host $consul_port $id $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
+        register_container $consul_host $consul_port $PROXY_CONTAINER $id $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
 done < $tempfile
 
 # remove temp files

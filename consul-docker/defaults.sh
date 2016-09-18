@@ -7,20 +7,6 @@
 # All these values are just defaults, and can be configured elsewhere.
 
 
-# common
-
-if [ -z $DOCKER_NETWORK ];
-then
-        # perconalab's default net
-        DOCKER_NETWORK='Theistareykjarbunga_net'
-fi
-
-if [ -z $PROXY_CONTAINER ];
-then
-        PROXY_CONTAINER='test'
-fi
-
-
 # ProxySQL related
 
 # by default, use perconalab image
@@ -55,5 +41,19 @@ fi
 if [ -z $TEST_CONTAINER_NAME ];
 then
         TEST_CONTAINER_NAME='test'
+fi
+
+
+# common
+
+if [ -z $DOCKER_NETWORK ];
+then
+        # perconalab's default net
+        DOCKER_NETWORK='Theistareykjarbunga_net'
+fi
+
+if [ -z $PROXY_CONTAINER ];
+then
+        PROXY_CONTAINER=$TEST_CONTAINER_NAME
 fi
 
