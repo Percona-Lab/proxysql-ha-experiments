@@ -44,16 +44,16 @@ fi
 function register_container {
         host=$1
         port=$2
-        container_id=$3
+        newserv_container_id=$3
         newserv_port=$4
         newserv_id=$5
         newserv_name=$6
         newserv_tags=$7
 
         # get container's IP from ID
-        ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $container_id)
+        ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $newserv_container_id)
         if [ -z ip ]; then
-                ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $container_id)
+                ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $newserv_container_id)
         fi
         
         echo "Registering $ip"
@@ -65,7 +65,7 @@ function register_container {
         cmd="$cmd curl http://$host:$port/v1/catalog/service/web \
                 [
                     {
-                        \"Node\":         \"$container_id\", \
+                        \"Node\":         \"$newserv_container_id\", \
                         \"Address\":      \"$ip\", \
                         \"ServiceID\":    \"$newserv_id\", \
                         \"ServiceName\":  \"$newserv_name\", \
