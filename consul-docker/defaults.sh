@@ -2,6 +2,10 @@
 # Variables can be overridden first or after including this file.
 # If a variable refers to a particular image, it should begin with its name uppercase (eg: PROXYSQL_*).
 
+# WARNING: DON'T CHANGE THESE VALUES
+# This could cause problems.
+# All these values are just defaults, and can be configured elsewhere.
+
 
 # common
 
@@ -46,5 +50,10 @@ fi
 if [ -z $TEST_IMAGE ];
 then
         TEST_IMAGE='ubuntu'
+fi
+
+if [ -z $TEST_CONTAINER_NAME ];
+then
+        TEST_CONTAINER_NAME='test'
 fi
 

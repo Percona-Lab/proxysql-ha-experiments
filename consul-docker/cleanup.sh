@@ -17,7 +17,19 @@ function rm_container {
 
 . defaults.sh
 
-rm_container $CONSUL_IMAGE "$CONSUL_LOCAL_PATH/$CONSUL_IMAGE"
-rm_container $PROXYSQL_IMAGE ''
-rm_container $TEST_IMAGE ''
+if [ ! -z $CONSUL_IMAGE ];
+		rm_container $CONSUL_IMAGE "$CONSUL_LOCAL_PATH/$CONSUL_IMAGE"
+else
+		echo "NOT removing Consul containers"
+fi
+if [ ! -z $PROXYSQL_IMAGE ];
+		rm_container $PROXYSQL_IMAGE ''
+else
+		echo "NOT removing ProxySQL containers"
+fi
+if [ ! -z $TEST_CONTAINER_NAME ];
+		docker rm -f $TEST_CONTAINER_NAME
+else
+		echo "NOT removing Test container"
+fi
 

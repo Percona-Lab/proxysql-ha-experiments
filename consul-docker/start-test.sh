@@ -70,14 +70,19 @@ then
         exit 1
 fi
 
-if [ -z $CONTAINER_NAME ];
+test_container=''
+if [ ! -z $CONTAINER_NAME ];
 then
-        CONTAINER_NAME='test'
+        # specified by user
+        test_container=$CONTAINER_NAME
+else
+        # specified in defaults.sh
+        test_container=$TEST_CONTAINER_NAME
 fi
 
 # remove container if exists
 if [ -z $SKIP_CONTAINER_RM ]; then
-        cmd="docker rm -f $CONTAINER_NAME"
+        cmd="docker rm -f $test_container"
         echo $cmd >> $DOCKER_LOG
         eval $cmd > /dev/null 2>&1
 fi
@@ -86,7 +91,7 @@ echo ''
 echo "Starting test container"
 
 # start container
-cmd="docker run -d --name=$CONTAINER_NAME \
+cmd="docker run -d --name=$test_container \
         $DOCKER_NETWORK \
         $TEST_IMAGE \
         /bin/sh -c 'while true; do sleep 1; done'"
@@ -95,7 +100,7 @@ eval $cmd > /dev/null 2>&1
 
 if [ $? -ne "0" ];
 then
-        echo "ERROR: failed to start container '$proxy_name'. Aborting"
+        echo "ERROR: failed to start container '$test_container'. Aborting"
         exit 1
 fi
 
@@ -103,7 +108,7 @@ fi
 if [[ ! -z $PACKAGES_UPDATE ]];
 then
         echo 'Updating packages'
-        cmd="docker  exec -ti $CONTAINER_NAME $PACKAGES_UPDATE"
+        cmd="docker  exec -ti $test_container $PACKAGES_UPDATE"
         echo $cmd >> $DOCKER_LOG
         eval $cmd > /dev/null 2>&1
 
@@ -112,12 +117,12 @@ then
                 echo "ERROR: failed to install packages"
         else
                 echo 'Installing packages'
-                cmd="docker  exec -ti $CONTAINER_NAME $PACKAGES_INSTALL"
+                cmd="docker  exec -ti $test_container $PACKAGES_INSTALL"
                 echo $cmd >> $DOCKER_LOG
                 eval $cmd > /dev/null 2>&1
                 if [ $? -ne "0" ];
                 then
-                        echo "ERROR: failed to start container '$proxy_name'. Aborting"
+                        echo "ERROR: failed to start container '$test_container'. Aborting"
                         exit 1
                 fi
         fi
@@ -125,5 +130,5 @@ fi
 
 echo ''
 echo "Running test container:"
-docker ps | grep "\b$CONTAINER_NAME"
+docker ps | grep "\b$test_container"
 
