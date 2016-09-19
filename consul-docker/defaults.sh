@@ -44,6 +44,18 @@ then
         TEST_CONTAINER_NAME='test'
 fi
 
+# to support different distros
+
+if [ -z $PACKAGES_UPDATE ];
+then
+        PACKAGES_UPDATE='apt-get update'
+fi
+
+if [ -z $PACKAGES_INSTALL ];
+then
+        PACKAGES_INSTALL='apt-get install -y iputils-ping dnsutils curl openssh-client mysql-client'
+fi
+
 
 # common
 

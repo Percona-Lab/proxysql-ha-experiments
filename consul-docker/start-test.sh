@@ -45,18 +45,6 @@ then
         DOCKER_NETWORK="--net=$DOCKER_NETWORK"
 fi
 
-# to support different distros
-
-if [ -z $PACKAGES_UPDATE ];
-then
-        PACKAGES_UPDATE='apt-get update'
-fi
-
-if [ -z $PACKAGES_INSTALL ];
-then
-        PACKAGES_INSTALL='apt-get install -y iputils-ping dnsutils curl openssh-client mysql-client'
-fi
-
 # pull the image or return error
 echo ''
 echo "Pulling '$TEST_IMAGE' image if necessary"
