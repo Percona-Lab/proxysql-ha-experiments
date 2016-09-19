@@ -15,6 +15,9 @@ function rm_container {
 }
 
 
+# include configuration
+. conf/scripts/common.cnf
+. conf/scripts/consul.cnf
 . defaults.sh
 
 if [ ! -z $CONSUL_IMAGE ];

@@ -5,6 +5,3 @@
 # * register-services.sh
 # * cleanup.sh
 
-# by default, home dir
-CONFIG_DIR='./conf'
-

@@ -96,6 +96,9 @@ then
         consul_port='8600'
 fi
 
+# include configuration
+. conf/scripts/common.cnf
+. conf/scripts/consul.cnf
 . defaults.sh
 
 
