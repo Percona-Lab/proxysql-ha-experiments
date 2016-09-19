@@ -46,6 +46,9 @@ declare node1
 
 IFS=" "
 
+# include configuration
+. conf/scripts/common.cnf
+. conf/scripts/consul.cnf
 . defaults.sh
 
 # initialize docker commands log
@@ -85,8 +88,8 @@ if [ ! -z $CONFIG_DIR ];
 then
         if [ -d $CONFIG_DIR -o -L $CONFIG_DIR ];
         then
-                file_content_server=$(cat $CONFIG_DIR/consul.common.conf)$(cat $CONFIG_DIR/consul.server.conf)'}'
-                file_content_client=$(cat $CONFIG_DIR/consul.common.conf)$(cat $CONFIG_DIR/consul.client.conf)'}'
+                file_content_server=$(cat $CONFIG_DIR/consul/consul.common.conf)$(cat $CONFIG_DIR/consul/consul.server.conf)'}'
+                file_content_client=$(cat $CONFIG_DIR/consul/consul.common.conf)$(cat $CONFIG_DIR/consul/consul.client.conf)'}'
         else
                 echo 'ERROR: CONFIG_DIR not found or not a directoy. Aborting'
                 exit 1
@@ -288,6 +291,7 @@ echo ''
 echo "Consul cluster members:"
 docker exec -t $SERVER_CONTAINER_NAME-1 consul members -detailed
 # expected to fail before 0.7
+echo ''
 echo "Raft info:"
 docker exec -t $SERVER_CONTAINER_NAME-1 consul operator raft -list-peers
 

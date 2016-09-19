@@ -33,6 +33,7 @@ fi
 
 # test container
 
+# by default, ubuntu
 if [ -z $TEST_IMAGE ];
 then
         TEST_IMAGE='ubuntu'
@@ -46,14 +47,22 @@ fi
 
 # common
 
+# containers will be created in this network
 if [ -z $DOCKER_NETWORK ];
 then
         # perconalab's default net
         DOCKER_NETWORK='Theistareykjarbunga_net'
 fi
 
+# container used to execute commands like curl against Consul
 if [ -z $PROXY_CONTAINER ];
 then
         PROXY_CONTAINER=$TEST_CONTAINER_NAME
+fi
+
+# containers configuration files path
+if [ -z $CONFIG_DIR ];
+then
+        CONFIG_DIR="$HOME/docker/$CONSUL_IMAGE"
 fi
 

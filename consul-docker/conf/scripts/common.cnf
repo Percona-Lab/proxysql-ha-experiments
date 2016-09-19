@@ -1,0 +1,4 @@
+# Consul User configuration
+# Here the user can configure values to avoid passing them via command line.
+# This file is read before other files. So values written here can be overridden.
+
