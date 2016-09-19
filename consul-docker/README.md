@@ -64,6 +64,16 @@ Setup a Consul cluster with 3 servers and 4 clients:
 bash start-consul.sh 3 4
 ```
 
+You know that the cluster is up if the scripts ends with an output like this:
+```
+Raft info:
+Node     ID               Address          State     Voter
+agent-3  172.19.0.7:8300  172.19.0.7:8300  follower  true
+agent-2  172.19.0.6:8300  172.19.0.6:8300  follower  true
+agent-1  172.19.0.4:8300  172.19.0.4:8300  leader    true
+```
+These are the cluster servers, and one of them must be in "leader" state.
+
 Create a test container:
 ```
 bash start-test.sh
