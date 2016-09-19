@@ -38,7 +38,11 @@ u=$1
 
 IFS=" "
 
+# include configuration
+. conf/scripts/common.cnf
+. conf/scripts/proxysql.cnf
 . defaults.sh
+
 
 # initialize docker commands log
 if [ -z $DOCKER_LOG ]; then

@@ -30,7 +30,11 @@ Examples:
 fi
 
 
+# include configuration
+. conf/scripts/common.cnf
+. conf/scripts/test.cnf
 . defaults.sh
+
 
 # initialize docker commands log
 if [ -z $DOCKER_LOG ];

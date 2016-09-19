@@ -99,6 +99,7 @@ fi
 # include configuration
 . conf/scripts/common.cnf
 . conf/scripts/consul.cnf
+. conf/scripts/test.cnf
 . defaults.sh
 
 

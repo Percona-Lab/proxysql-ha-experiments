@@ -1,0 +1,6 @@
+# Consul User configuration
+# Here the user can configure values to avoid passing them via command line.
+# This file is read by the following scripts:
+# * start-proxysql.sh
+# * cleanup.sh
+
