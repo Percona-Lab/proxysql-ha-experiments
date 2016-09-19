@@ -82,8 +82,7 @@ function register_container {
 
         if [ $? -ne "0" ];
         then
-                echo "ERROR: failed to start container '$proxy_name'. Aborting"
-                exit 1
+                echo "ERROR: command failed: $cmd"
         fi
 }
 
