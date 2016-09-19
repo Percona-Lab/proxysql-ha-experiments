@@ -3,5 +3,8 @@
 # This file is read before other files. So values written here can be overridden.
 
 # by default, home dir
-CONFIG_DIR='./conf'
+if [ -z $CONFIG_DIR ];
+then
+		CONFIG_DIR='./conf'
+fi
 
