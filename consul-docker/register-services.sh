@@ -4,9 +4,12 @@
 if [ "$1" == 'help' -o "$1" == 'HELP' ]; then
         echo "
 Register containers of a certain type in Consul.
-Usage: [ENV-VARS] consul-register-services.sh [consul-host] <consul-port>
-    consul-host        Consul client IP/hostname
-    consul-port        Consul client port, use if non-standard
+Usage: [ENV-VARS] consul-register-services.sh
+    CONSUL_CONTAINER   Name of a Consul client container.
+    CONSUL_HOST        Consul client IP/hostname
+    CONSUL_PORT        Consul client port, use if non-standard
+
+CONSUL_CONTAINER and CONSUL_HOST cannot be specified together.
 
 All environment variables are optional:
     TEMPDIR            Where temporary files are written.
@@ -77,7 +80,7 @@ function register_container {
 
         echo $cmd
         # it's possible that this is not a docker command, but log it anyway
-        echo $cmd > DOCKER_LOG
+        echo $cmd > $DOCKER_LOG
         eval $cmd > /dev/null 2>&1
 
         if [ $? -ne "0" ];
@@ -87,19 +90,35 @@ function register_container {
 }
 
 
-# get params
-consul_host=$1
-consul_port=$2
-if [ ! -z $consul_port ];
-then
-        consul_port='8600'
-fi
-
 # include configuration
 . conf/scripts/common.cnf
 . conf/scripts/consul.cnf
 . conf/scripts/test.cnf
 . defaults.sh
+
+
+# get params
+if [ ! -z $CONSUL_CONTAINER ];
+then
+        if [ ! -z $CONSUL_HOST ];
+        then
+                echo "ERROR: CONSUL_HOST and CONSUL_CONTAINER cannot be specified together"
+                exit 1
+        fi
+
+        CONSUL_HOST=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONSUL_CONTAINER)
+        if [ -z CONSUL_HOST ]; then
+                CONSUL_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $CONSUL_CONTAINER)
+        fi
+else
+        echo "ERROR: CONSUL_HOST and CONSUL_CONTAINER cannot be specified together"
+        exit 1
+fi
+
+if [ -z $CONSUL_PORT ];
+then
+        CONSUL_PORT='8600'
+fi
 
 
 # single service
@@ -110,7 +129,7 @@ then
                 echo 'ERROR: CONTAINER_ID cannot be combined with SERVICES_IMAGE or SERVICES_NAME. Aborting'
                 exit 1
         fi
-        register_container $consul_host $consul_port $PROXY_CONTAINER $CONTAINER_ID $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
+        register_container $CONSUL_HOST $CONSUL_PORT $PROXY_CONTAINER $CONTAINER_ID $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
         exit 0
 fi
 
@@ -147,7 +166,7 @@ cmd="docker ps $filter | tail -n +2 | awk '{ print \$1 }'"
 eval $cmd > $tempfile
 
 while read id; do
-        register_container $consul_host $consul_port $PROXY_CONTAINER $id $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
+        register_container $CONSUL_HOST $CONSUL_PORT $PROXY_CONTAINER $id $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
 done < $tempfile
 
 # remove temp files
