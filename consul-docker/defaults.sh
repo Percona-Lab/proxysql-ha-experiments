@@ -53,7 +53,7 @@ fi
 
 if [ -z $PACKAGES_INSTALL ];
 then
-        PACKAGES_INSTALL='apt-get install -y iputils-ping dnsutils curl openssh-client mysql-client'
+        PACKAGES_INSTALL='apt-get install -y iputils-ping telnet dnsutils curl openssh-client mysql-client'
 fi
 
 

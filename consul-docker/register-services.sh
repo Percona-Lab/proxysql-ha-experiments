@@ -45,8 +45,8 @@ fi
 
 # Register a service in Consul.
 function register_container {
-        host=$1
-        port=$2
+        consul_host=$1
+        consul_port=$2
         proxy_container=$3
         newserv_container_id=$4
         newserv_port=$5
@@ -55,22 +55,22 @@ function register_container {
         newserv_tags=$8
 
         # get container's IP from ID
-        ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $newserv_container_id)
-        if [ -z ip ]; then
-                ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $newserv_container_id)
+        newserv_ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $newserv_container_id)
+        if [ -z newserv_ip ]; then
+                newserv_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $newserv_container_id)
         fi
         
-        echo "Registering $ip"
+        echo "Registering $newserv_ip on host $CONSUL_HOST"
         cmd=''
         if [ ! -z $proxy_container ];
         then
                 cmd="docker exec -ti $proxy_container"
         fi
-        cmd="$cmd curl http://$host:$port/v1/catalog/service/web \
+        cmd="$cmd curl http://$consul_host:$consul_port/v1/catalog/service/db \
                 [
                     {
                         \"Node\":         \"$newserv_container_id\", \
-                        \"Address\":      \"$ip\", \
+                        \"Address\":      \"$newserv_ip\", \
                         \"ServiceID\":    \"$newserv_id\", \
                         \"ServiceName\":  \"$newserv_name\", \
                         \"ServiceTags\":  [\"$newserv_tags\"], \
@@ -110,8 +110,9 @@ then
         if [ -z CONSUL_HOST ]; then
                 CONSUL_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $CONSUL_CONTAINER)
         fi
-else
-        echo "ERROR: CONSUL_HOST and CONSUL_CONTAINER cannot be specified together"
+elif [ ! -z $CONSUL_HOST ];
+then
+        echo "ERROR: CONSUL_HOST or CONSUL_CONTAINER must be specified"
         exit 1
 fi
 
