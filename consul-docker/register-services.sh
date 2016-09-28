@@ -66,17 +66,14 @@ function register_container {
         then
                 cmd="docker exec -ti $proxy_container"
         fi
-        cmd="$cmd curl http://$consul_host:$consul_port/v1/catalog/service/db \
-                [
-                    {
-                        \"Node\":         \"$newserv_container_id\", \
-                        \"Address\":      \"$newserv_ip\", \
-                        \"ServiceID\":    \"$newserv_id\", \
-                        \"ServiceName\":  \"$newserv_name\", \
-                        \"ServiceTags\":  [\"$newserv_tags\"], \
-                        \"ServicePort\":  $newserv_port
-                    }
-                ]"
+        cmd="$cmd curl -H \"Content-Type: application/json\" -X PUT -d \"
+                {
+                        \\\"ID\\\":         \\\"$newserv_id\\\",
+                        \\\"Name\\\":       \\\"$newserv_name\\\",
+                        \\\"Address\\\":    \\\"$newserv_ip\\\",
+                        \\\"Port\\\":       $newserv_port
+                }
+                \" http://$consul_host:$consul_port/v1/agent/service/register"
 
         echo $cmd
         # it's possible that this is not a docker command, but log it anyway
@@ -118,7 +115,7 @@ fi
 
 if [ -z $CONSUL_PORT ];
 then
-        CONSUL_PORT='8600'
+        CONSUL_PORT='8500'
 fi
 
 

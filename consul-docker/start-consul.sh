@@ -267,7 +267,7 @@ do
         fi
 
         # start container and join first server
-        cmd="docker run --name=$consul_name $DOCKER_NETWORK -v $container_path/config:/consul/config -d -e 'CONSUL_LOCAL_CONFIG=$node_conf' $CONSUL_IMAGE agent -client=0.0.0.0 -join=$node1_ip"
+        cmd="docker run --name=$consul_name $DOCKER_NETWORK -v $container_path/config:/consul/config -d -e 'CONSUL_LOCAL_CONFIG=$node_conf' $CONSUL_IMAGE agent -client 0.0.0.0 -join=$node1_ip"
         echo $cmd >> $DOCKER_LOG
         eval $cmd > /dev/null 2>&1
         
