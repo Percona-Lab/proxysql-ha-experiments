@@ -2,6 +2,7 @@
 # Here the user can configure values to avoid passing them via command line.
 # This file is read by the following scripts:
 # * start-consul.sh
+# * stop-consul.sh
 # * register-services.sh
 # * cleanup.sh
 

@@ -17,6 +17,10 @@ fi
 
 # get params
 
+. conf/scripts/common.cnf
+. conf/scripts/consul.cnf
+. defaults.sh
+
 container_name=$1
 
 # validate input
