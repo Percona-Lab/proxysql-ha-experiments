@@ -87,7 +87,12 @@ Delete all above containers:
 bash cleanup.sh
 ```
 
-Stopping and restarting a container:
+Manually register a service:
+```
+CONSUL_CONTAINER=consul-client-1 CONTAINER_ID='proxysql-1' NEWSERV_PORT='3306' NEWSERV_SERVICE_NAME='db' NEWSERV_TAGS='db' bash register-services.sh consul-client-1
+```
+
+Stop and restart a container:
 ```
 $ docker exec consul-server-1 consul members
 Node     Address          Status  Type    Build  Protocol  DC
