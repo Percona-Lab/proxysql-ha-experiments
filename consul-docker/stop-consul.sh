@@ -46,9 +46,21 @@ cmd="docker exec $container_name consul leave"
 echo $cmd >> $DOCKER_LOG
 eval $cmd > /dev/null 2>&1
 
+if [ $? -ne "0" ];
+then
+        echo "ERROR: failed to gracefully leave the cluster. Aborting"
+        exit 1
+fi
+
 # stop the container
 sleep 1
 cmd="docker stop $container_name"
 echo $cmd >> $DOCKER_LOG
 eval $cmd > /dev/null 2>&1
+
+if [ $? -ne "0" ];
+then
+        echo "ERROR: failed to stop the container. Aborting"
+        exit 1
+fi
 
