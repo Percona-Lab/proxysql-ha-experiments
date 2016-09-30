@@ -36,6 +36,9 @@ the user and continue.
 <dl>
   <dt><code>start-consul.sh</code></dt>
   <dd>Setup a Consul cluster in Docker, with the specified number of servers and clients.</dd>
+
+  <dt><code>stop-consul.sh</code></dt>
+  <dd>Gracefully stop a Consul node and its container.</dd>
   
   <dt><code>start-proxysql.sh</code></dt>
   <dd>Create specified number of ProxySQL containers.</dd>
@@ -82,5 +85,35 @@ bash start-test.sh
 Delete all above containers:
 ```
 bash cleanup.sh
+```
+
+Stopping and restarting a container:
+```
+$ docker exec consul-server-1 consul members
+Node     Address          Status  Type    Build  Protocol  DC
+agent-1  172.19.0.2:8301  alive   server  0.7.0  2         dc1
+agent-2  172.19.0.3:8301  alive   server  0.7.0  2         dc1
+agent-3  172.19.0.4:8301  alive   server  0.7.0  2         dc1
+agent-4  172.19.0.6:8301  alive   client  0.7.0  2         dc1
+agent-5  172.19.0.7:8301  alive   client  0.7.0  2         dc1
+$ bash stop-consul.sh consul-client-1
+Logging Docker commands to consul-activity.docker.log
+$ docker exec consul-server-1 consul members
+Node     Address          Status  Type    Build  Protocol  DC
+agent-1  172.19.0.2:8301  alive   server  0.7.0  2         dc1
+agent-2  172.19.0.3:8301  alive   server  0.7.0  2         dc1
+agent-3  172.19.0.4:8301  alive   server  0.7.0  2         dc1
+agent-4  172.19.0.6:8301  left    client  0.7.0  2         dc1
+agent-5  172.19.0.7:8301  alive   client  0.7.0  2         dc1
+$ docker start consul-client-1 
+consul-client-1
+$ docker exec consul-server-1 consul members
+Node     Address          Status  Type    Build  Protocol  DC
+agent-1  172.19.0.2:8301  alive   server  0.7.0  2         dc1
+agent-2  172.19.0.3:8301  alive   server  0.7.0  2         dc1
+agent-3  172.19.0.4:8301  alive   server  0.7.0  2         dc1
+agent-4  172.19.0.6:8301  alive   client  0.7.0  2         dc1
+agent-5  172.19.0.7:8301  alive   client  0.7.0  2         dc1
+
 ```
 
