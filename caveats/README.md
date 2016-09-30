@@ -3,7 +3,11 @@
 This file exists to point caveats that you may find when running Consul & ProxySQL, expecially if they are not clear from
 the official documentation.
 
+
 ##Consul caveats
+
+These caveats are relative to Consul in general, and not to ProxySQL in particular.
+
 
 ###Deregistering
 
