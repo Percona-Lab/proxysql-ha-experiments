@@ -81,6 +81,11 @@ then
         CONSUL_PORT='8500'
 fi
 
+if [ -z $NEWSERV_SERVICE_ID ];
+then
+        NEWSERV_SERVICE_ID=$CONTAINER_ID
+fi
+
 # initialize docker commands log
 if [ -z $DOCKER_LOG ];
 then
