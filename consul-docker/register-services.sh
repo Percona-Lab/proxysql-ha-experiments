@@ -43,50 +43,6 @@ Examples:
 fi
 
 
-# Register a service in Consul.
-function register_container {
-        consul_host=$1
-        consul_port=$2
-        proxy_container=$3
-        newserv_container_id=$4
-        newserv_port=$5
-        newserv_id=$6
-        newserv_name=$7
-        newserv_tags=$8
-
-        # get container's IP from ID
-        newserv_ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $newserv_container_id)
-        if [ -z newserv_ip ]; then
-                newserv_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $newserv_container_id)
-        fi
-        
-        echo "Registering $newserv_ip on host $CONSUL_HOST"
-        cmd=''
-        if [ ! -z $proxy_container ];
-        then
-                cmd="docker exec -ti $proxy_container"
-        fi
-        cmd="$cmd curl -H \"Content-Type: application/json\" -X PUT -d \"
-                {
-                        \\\"ID\\\":         \\\"$newserv_id\\\",
-                        \\\"Name\\\":       \\\"$newserv_name\\\",
-                        \\\"Address\\\":    \\\"$newserv_ip\\\",
-                        \\\"Port\\\":       $newserv_port
-                }
-                \" http://$consul_host:$consul_port/v1/agent/service/register"
-
-        echo $cmd
-        # it's possible that this is not a docker command, but log it anyway
-        echo $cmd > $DOCKER_LOG
-        eval $cmd > /dev/null 2>&1
-
-        if [ $? -ne "0" ];
-        then
-                echo "ERROR: command failed: $cmd"
-        fi
-}
-
-
 # include configuration
 . conf/scripts/common.cnf
 . conf/scripts/consul.cnf
@@ -95,6 +51,13 @@ function register_container {
 
 
 # get params
+
+if [ -z $CONTAINER_ID ];
+then
+        echo "ERROR: CONTAINER_ID must be specified"
+        exit 1
+fi
+
 if [ ! -z $CONSUL_CONTAINER ];
 then
         if [ ! -z $CONSUL_HOST ];
@@ -118,55 +81,46 @@ then
         CONSUL_PORT='8500'
 fi
 
-
-# single service
-if [ ! -z $CONTAINER_ID ];
-then
-        if [ ! -z $SERVICES_IMAGE -o ! -z $SERVICES_NAME ];
-        then
-                echo 'ERROR: CONTAINER_ID cannot be combined with SERVICES_IMAGE or SERVICES_NAME. Aborting'
-                exit 1
-        fi
-        register_container $CONSUL_HOST $CONSUL_PORT $PROXY_CONTAINER $CONTAINER_ID $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
-        exit 0
-fi
-
-
-# services matching given filter(s)
-if [ -z $TEMPDIR ];
-then
-        TEMPDIR='~/temp'
-fi
-mkdir -p $TEMPDIR > /dev/null 2>&1
-
 # initialize docker commands log
 if [ -z $DOCKER_LOG ];
 then
         DOCKER_LOG='consul-activity.docker.log'
 fi
+
+
 echo "Logging Docker commands to $DOCKER_LOG"
 touch $DOCKER_LOG
 echo '#'`date +"%s"` >> $DOCKER_LOG
 
-filter=''
-if [ ! -z $SERVICES_IMAGE ];
-then
-        filter="$filter --filter 'ancestor=$SERVICES_IMAGE'"
-fi
-if [ ! -z $SERVICES_NAME ];
-then
-        filter="$filter --filter 'name=$SERVICES_NAME'"
+
+# get container's IP from ID
+newserv_ip=$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
+if [ -z newserv_ip ]; then
+        newserv_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress}}' $CONTAINER_ID)
 fi
 
-# write the services to remove into a temp file
-tempfile="$TEMPDIR/consul-register"
-cmd="docker ps $filter | tail -n +2 | awk '{ print \$1 }'"
-eval $cmd > $tempfile
+echo "Registering $newserv_ip on host $CONSUL_HOST"
+cmd=''
+if [ ! -z $PROXY_CONTAINER ];
+then
+        cmd="docker exec -ti $PROXY_CONTAINER"
+fi
+cmd="$cmd curl -H \"Content-Type: application/json\" -X PUT -d \"
+        {
+                \\\"ID\\\":         \\\"$NEWSERV_SERVICE_ID\\\",
+                \\\"Name\\\":       \\\"$NEWSERV_SERVICE_NAME\\\",
+                \\\"Address\\\":    \\\"$newserv_ip\\\",
+                \\\"Port\\\":       $NEWSERV_PORT
+        }
+        \" http://$CONSUL_HOST:$CONSUL_PORT/v1/agent/service/register"
 
-while read id; do
-        register_container $CONSUL_HOST $CONSUL_PORT $PROXY_CONTAINER $id $NEWSERV_PORT $NEWSERV_SERVICE_ID $NEWSERV_SERVICE_NAME $NEWSERV_TAGS
-done < $tempfile
+# it's possible that this is not a docker command, but log it anyway
+echo $cmd >> $DOCKER_LOG
+eval $cmd > /dev/null 2>&1
 
-# remove temp files
-rm $tempfile
+if [ $? -ne "0" ];
+then
+        echo "ERROR: command failed: $cmd"
+fi
+
 
