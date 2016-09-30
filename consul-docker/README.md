@@ -55,7 +55,41 @@ the user and continue.
   <dd>Destroy containers created with other scripts.</dd>
 </dl>
 
-## Examples
+## Configuration
+
+### Consul configuration scripts
+
+They are in the directory: conf/consul.
+
+<dl>
+  <dt>consul.common.conf</dt>
+  <dd>These settings are used to configure all Consul nodes. Omit the final '}'.</dd>
+
+  <dt>consul.server.conf</dt>
+  <dd>Only used for Consul server nodes. Omit '{' and '}' at the beginning and the end of the file.</dd>
+
+  <dt>consul.client.conf</dt>
+  <dd>Only used for Consul client nodes. Omit '{' and '}' at the beginning and the end of the file.</dd>
+</dl>
+
+The following string replacing is done by the scripts:
+
+* ::agent_id:: is replaced with a progressive number. Used to assign unique node names.
+* ::dc_size:: is replaced with the number of nodes in the cluster.
+
+## Scripts configuration files
+
+Options which change the scripts behavior. These are in conf/scipts.
+
+```common.cnf``` is used by all scripts.
+
+Other files refer to a specific service (Consul, ProxySQL, test container). Each file has a comment with a list of the files
+that use its settings.
+
+common.cnf overwrite scripts defaults. Specific files settings overwrite common.cnf. They shouldn't overwrite each other, because
+all files should contain a specific set of settings. Environment variables overwrite all files.
+
+# Examples
 
 Create 2 ProxySQL containers:
 ```
