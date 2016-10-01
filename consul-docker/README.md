@@ -41,7 +41,7 @@ the user and continue.
   <dd>Gracefully stop a Consul node and its container.</dd>
   
   <dt><code>start-proxysql.sh</code></dt>
-  <dd>Create specified number of ProxySQL containers.</dd>
+  <dd>Create specified number of ProxySQL containers and optionally register services in Consul.</dd>
   
   <dt><code>start-test.sh</code></dt>
   <dd>Create a container with clients needed to test ProxySQL and Consul: ping, dig, curl, ssh, mysql.</dd>
