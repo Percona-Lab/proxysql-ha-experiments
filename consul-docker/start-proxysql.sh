@@ -130,7 +130,15 @@ do
         # register service in CONSUL_CONTAINER
         if [ ! -z "$CONSUL_CONTAINER" ];
         then
+                checks_file="./conf/consul/checks/$NEWSERV_SERVICE_NAME"
+                checks_json=$(cat $checks_file)
+                checks_json="${checks_json/'::host::'/$newserv_ip}"
+                checks_json="${checks_json/'::port::'/$PROXYSQL_PORT_ADMIN}"
+                checks_json="${checks_json/'::user::'/$PROXYSQL_USER}"
+                checks_json="${checks_json/'::password::'/$PROXYSQL_PASSWORD}"
+
                 SKIP_CONFIG='1' \
+                CHECKS=$checks_json \
                 CONSUL_HOST='' \
                 CONSUL_CONTAINER=$CONSUL_CONTAINER \
                 CONTAINER_ID=$proxy_name \

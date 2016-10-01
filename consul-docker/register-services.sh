@@ -132,8 +132,7 @@ then
         echo "ERROR: command failed: $cmd"
 fi
 
-checks_file="./conf/consul/checks/$NEWSERV_SERVICE_NAME"
-if [ -f $checks_file -o -L $checks_file ];
+if [ ! -z "$CHECKS" ];
 then
         # install mysql clients on client node, so it can run the checks
         cmd="docker exec -t $CONSUL_CONTAINER apk update"
@@ -149,13 +148,8 @@ then
         fi
 
         # register check
-        checks_json=$(cat $checks_file)
-        checks_json="${checks_json/'::host::'/$newserv_ip}"
-        checks_json="${checks_json/'::port::'/$PROXYSQL_PORT_ADMIN}"
-        checks_json="${checks_json/'::user::'/$PROXYSQL_USER}"
-        checks_json="${checks_json/'::password::'/$PROXYSQL_PASSWORD}"
 
-        cmd="curl -H \"Content-Type: application/json\" -X PUT -d \"$checks_json\" http://$CONSUL_HOST:$CONSUL_PORT/v1/agent/check/register"
+        cmd="curl -H \"Content-Type: application/json\" -X PUT -d \"$CHECKS\" http://$CONSUL_HOST:$CONSUL_PORT/v1/agent/check/register"
         echo $cmd >> $DOCKER_LOG
         eval $cmd > /dev/null 2>&1
         if [ $? -ne "0" ];
