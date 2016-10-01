@@ -15,6 +15,11 @@ then
         PROXYSQL_IMAGE='perconalab/proxysql'
 fi
 
+if [ -z "$PROXYSQL_SERVICE_NAME" ];
+then
+        PROXYSQL_SERVICE_NAME='mysql'
+fi
+
 
 # Consul related
 
@@ -46,12 +51,12 @@ fi
 
 # to support different distros
 
-if [ -z $PACKAGES_UPDATE ];
+if [ -z "$PACKAGES_UPDATE" ];
 then
         PACKAGES_UPDATE='apt-get update'
 fi
 
-if [ -z $PACKAGES_INSTALL ];
+if [ -z "$PACKAGES_INSTALL" ];
 then
         PACKAGES_INSTALL='apt-get install -y iputils-ping telnet dnsutils curl openssh-client mysql-client'
 fi

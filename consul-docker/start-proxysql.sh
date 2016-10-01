@@ -21,6 +21,10 @@ All environment variables are optional:
     CONTAINER_NAME     Server containers prefix. Default: proxysql
     SKIP_CONTAINER_RM  Don't remove existing containers.
 
+    CONSUL_CONTAINER   The service will be registered into this Consul node.
+                       Leave empty to avoid registration.
+    SERVICE_NAME       The service will be registered in Consul with this name.
+
 Examples:
     SKIP_CONTAINER_RM=1 start-proxysql.sh 2
 "
@@ -43,6 +47,11 @@ IFS=" "
 . conf/scripts/proxysql.cnf
 . defaults.sh
 
+
+if [ -z $SERVICE_NAME ];
+then
+        SERVICE_NAME=$PROXYSQL_SERVICE_NAME
+fi
 
 # initialize docker commands log
 if [ -z $DOCKER_LOG ]; then
@@ -116,6 +125,16 @@ do
         then
                 echo "ERROR: failed to start container '$proxy_name'. Aborting"
                 exit 1
+        fi
+
+        if [ ! -z $CONSUL_CONTAINER ];
+        then
+                CONSUL_HOST='' \
+                CONSUL_CONTAINER=$CONSUL_CONTAINER \
+                CONTAINER_ID=$proxy_name \
+                NEWSERV_PORT='3306' \
+                NEWSERV_SERVICE_NAME=$SERVICE_NAME \
+                        . register-services.sh consul-client-1
         fi
 
         i=$[$i+1]
