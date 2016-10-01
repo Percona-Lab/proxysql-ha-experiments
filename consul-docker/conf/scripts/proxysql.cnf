@@ -5,6 +5,7 @@
 # * register-services.sh
 # * cleanup.sh
 
+PROXYSQL_PORT='3306'
 PROXYSQL_PORT_ADMIN='6032'
 PROXYSQL_USER='admin'
 PROXYSQL_PASSWORD='admin'

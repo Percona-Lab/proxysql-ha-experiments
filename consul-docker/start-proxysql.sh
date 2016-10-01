@@ -128,12 +128,13 @@ do
         fi
 
         # register service in CONSUL_CONTAINER
-        if [ ! -z $CONSUL_CONTAINER ];
+        if [ ! -z "$CONSUL_CONTAINER" ];
         then
+                SKIP_CONFIG='1' \
                 CONSUL_HOST='' \
                 CONSUL_CONTAINER=$CONSUL_CONTAINER \
                 CONTAINER_ID=$proxy_name \
-                NEWSERV_PORT='3306' \
+                NEWSERV_PORT=$PROXYSQL_PORT \
                 NEWSERV_SERVICE_NAME=$SERVICE_NAME \
                         . register-services.sh consul-client-1
         fi

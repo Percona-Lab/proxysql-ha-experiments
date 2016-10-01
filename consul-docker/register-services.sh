@@ -44,10 +44,13 @@ fi
 
 
 # include configuration
-. conf/scripts/common.cnf
-. conf/scripts/consul.cnf
-. conf/scripts/proxysql.cnf
-. conf/scripts/test.cnf
+if [ -z $SKIP_CONFIG ];
+then
+        . conf/scripts/common.cnf
+        . conf/scripts/consul.cnf
+        . conf/scripts/proxysql.cnf
+        . conf/scripts/test.cnf
+fi
 . defaults.sh
 
 
