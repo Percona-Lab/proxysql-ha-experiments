@@ -128,4 +128,10 @@ then
         echo "ERROR: command failed: $cmd"
 fi
 
+checks_file="./conf/consul/checks/$CONTAINER_ID"
+if [ -f $checks_file -o -L $checks_file ];
+then
+        # support for checks to be added soon
+        echo 1 > /dev/null
+fi
 

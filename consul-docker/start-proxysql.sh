@@ -127,6 +127,7 @@ do
                 exit 1
         fi
 
+        # register service in CONSUL_CONTAINER
         if [ ! -z $CONSUL_CONTAINER ];
         then
                 CONSUL_HOST='' \

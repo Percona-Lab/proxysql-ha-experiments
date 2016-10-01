@@ -1,0 +1,7 @@
+"check": {
+        "id": "mysql-ping",
+        "name"; "MySQL ping",
+        "script": "mysqladmin ping -h::host:: -P::port:: -u::user:: -p::password::",
+        "interval": "10s",
+        "timeout": "3s"
+}
