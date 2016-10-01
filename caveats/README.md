@@ -11,6 +11,9 @@ These caveats are relative to Consul in general, and not to ProxySQL in particul
 
 ###Deregistering
 
-You register a service (or a check) into the catalog, which is global, but you always deregister from the local node.
+* You register a service (or a check) into the catalog, which is global, but you always deregister from the local node.
 To completely deregistering a node, you should run a command against all nodes.
+
+* Registering a check in the catalog has no practical effect. The check must be registered into at least one client,
+using the agent endpoint.
 
