@@ -46,6 +46,7 @@ fi
 # include configuration
 . conf/scripts/common.cnf
 . conf/scripts/consul.cnf
+. conf/scripts/proxysql.cnf
 . conf/scripts/test.cnf
 . defaults.sh
 
@@ -128,10 +129,22 @@ then
         echo "ERROR: command failed: $cmd"
 fi
 
-checks_file="./conf/consul/checks/$CONTAINER_ID"
+checks_file="./conf/consul/checks/$NEWSERV_SERVICE_NAME"
 if [ -f $checks_file -o -L $checks_file ];
 then
         # support for checks to be added soon
-        echo 1 > /dev/null
+        checks_json=$(cat $checks_file)
+        checks_json="${checks_json/'::host::'/$PROXYSQL_HOST}"
+        checks_json="${checks_json/'::port::'/$PROXYSQL_PORT}"
+        checks_json="${checks_json/'::user::'/$PROXYSQL_USER}"
+        checks_json="${checks_json/'::password::'/$PROXYSQL_PASSWORD}"
+
+        cmd="curl -H \"Content-Type: application/json\" -X PUT -d \"$checks_json\" http://$CONSUL_HOST:$CONSUL_PORT/v1/agent/check/register"
+        echo $cmd >> $DOCKER_LOG
+        eval $cmd > /dev/null 2>&1
+        if [ $? -ne "0" ];
+        then
+                echo "ERROR: failed to register check. Command used: $cmd"
+        fi
 fi
 

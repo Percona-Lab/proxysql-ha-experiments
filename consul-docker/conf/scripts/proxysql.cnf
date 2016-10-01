@@ -2,5 +2,12 @@
 # Here the user can configure values to avoid passing them via command line.
 # This file is read by the following scripts:
 # * start-proxysql.sh
+# * register-services.sh
 # * cleanup.sh
+
+PROXYSQL_HOST='127.0.0.1'
+PROXYSQL_PORT='3306'
+PROXYSQL_PORT_ADMIN='6032'
+PROXYSQL_USER='admin'
+PROXYSQL_PASSWORD='admin'
 
