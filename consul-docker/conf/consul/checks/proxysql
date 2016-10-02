@@ -1,0 +1,8 @@
+{
+        \"ID\": \"proxysql-ping\",
+        \"Name\": \"ProxySQL ping\",
+        \"Notes\": \"ping admin port via mysqdladmin\",
+        \"Script\": \"mysqladmin ping -h::host:: -P::port:: -u::user:: -p::password::\",
+        \"Interval\": \"10s\",
+        \"Timeout\": \"3s\"
+}

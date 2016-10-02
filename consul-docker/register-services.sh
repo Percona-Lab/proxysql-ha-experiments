@@ -91,9 +91,12 @@ then
 fi
 
 # initialize docker commands log
-if [ -z $DOCKER_LOG ];
+if [ -z "$SKIP_CONFIG" ];
 then
-        DOCKER_LOG='consul-activity.docker.log'
+        if [ -z $DOCKER_LOG ];
+        then
+                DOCKER_LOG='consul-activity.docker.log'
+        fi
 fi
 
 

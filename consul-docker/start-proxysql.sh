@@ -23,7 +23,9 @@ All environment variables are optional:
 
     CONSUL_CONTAINER   The service will be registered into this Consul node.
                        Leave empty to avoid registration.
-    SERVICE_NAME       The service will be registered in Consul with this name.
+    PROXYSQL_SERVICE_NAME
+                       The ProxySQL service will be registered in Consul with this name.
+    MYSQL_SERVICE_NAME The MySQL service will be registered in Consul with this name.
 
 Examples:
     SKIP_CONTAINER_RM=1 start-proxysql.sh 2
@@ -47,11 +49,6 @@ IFS=" "
 . conf/scripts/proxysql.cnf
 . defaults.sh
 
-
-if [ -z $SERVICE_NAME ];
-then
-        SERVICE_NAME=$PROXYSQL_SERVICE_NAME
-fi
 
 # initialize docker commands log
 if [ -z $DOCKER_LOG ]; then
@@ -130,21 +127,47 @@ do
         # register service in CONSUL_CONTAINER
         if [ ! -z "$CONSUL_CONTAINER" ];
         then
-                checks_file="./conf/consul/checks/$NEWSERV_SERVICE_NAME"
-                checks_json=$(cat $checks_file)
-                checks_json="${checks_json/'::host::'/$newserv_ip}"
-                checks_json="${checks_json/'::port::'/$PROXYSQL_PORT_ADMIN}"
-                checks_json="${checks_json/'::user::'/$PROXYSQL_USER}"
-                checks_json="${checks_json/'::password::'/$PROXYSQL_PASSWORD}"
+                # register "proxysql" service
 
-                SKIP_CONFIG='1' \
-                CHECKS=$checks_json \
-                CONSUL_HOST='' \
-                CONSUL_CONTAINER=$CONSUL_CONTAINER \
-                CONTAINER_ID=$proxy_name \
-                NEWSERV_PORT=$PROXYSQL_PORT \
-                NEWSERV_SERVICE_NAME=$SERVICE_NAME \
-                        . register-services.sh consul-client-1
+                if [ ! -z "$PROXYSQL_SERVICE_NAME" ];
+                then
+                        checks_file="./conf/consul/checks/$PROXYSQL_SERVICE_NAME"
+                        checks_json=$(cat $checks_file)
+                        checks_json="${checks_json/'::host::'/$newserv_ip}"
+                        checks_json="${checks_json/'::port::'/$PROXYSQL_PORT_ADMIN}"
+                        checks_json="${checks_json/'::user::'/$PROXYSQL_USER_ADMIN}"
+                        checks_json="${checks_json/'::password::'/$PROXYSQL_PASSWORD_ADMIN}"
+
+                        SKIP_CONFIG='1' \
+                        CHECKS=$checks_json \
+                        CONSUL_HOST='' \
+                        CONSUL_CONTAINER=$CONSUL_CONTAINER \
+                        CONTAINER_ID=$proxy_name \
+                        NEWSERV_PORT=$PROXYSQL_PORT_ADMIN \
+                        NEWSERV_SERVICE_NAME=$PROXYSQL_SERVICE_NAME \
+                                . register-services.sh $CONSUL_CONTAINER
+                fi
+
+                # register "mysql" service
+                
+                if [ ! -z "$MYSQL_SERVICE_NAME" ];
+                then
+                        checks_file="./conf/consul/checks/$MYSQL_SERVICE_NAME"
+                        checks_json=$(cat $checks_file)
+                        checks_json="${checks_json/'::host::'/$newserv_ip}"
+                        checks_json="${checks_json/'::port::'/$PROXYSQL_PORT_ADMIN}"
+                        checks_json="${checks_json/'::user::'/$PROXYSQL_USER_ADMIN}"
+                        checks_json="${checks_json/'::password::'/$PROXYSQL_PASSWORD_ADMIN}"
+
+                        SKIP_CONFIG='1' \
+                        CHECKS=$checks_json \
+                        CONSUL_HOST='' \
+                        CONSUL_CONTAINER=$CONSUL_CONTAINER \
+                        CONTAINER_ID=$proxy_name \
+                        NEWSERV_PORT=$PROXYSQL_PORT_ADMIN \
+                        NEWSERV_SERVICE_NAME=$MYSQL_SERVICE_NAME \
+                                . register-services.sh $CONSUL_CONTAINER
+                fi
         fi
 
         i=$[$i+1]
