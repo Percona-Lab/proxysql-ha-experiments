@@ -20,6 +20,10 @@ using the agent endpoint.
 * You register a service (or a check) into the catalog, which is global, but you always deregister from the local node.
 To completely deregistering a node, you should run a command against all nodes.
 
+* A client is responsible for its own checks. If it dies, no one will do those checks. Normally it isn't huge problem,
+because a client runs on a service's machine. But with Docker, usually a client has its own container. Thus, keep some
+check redundancy.
+
 
 ##Consul and ProxySQL
 
