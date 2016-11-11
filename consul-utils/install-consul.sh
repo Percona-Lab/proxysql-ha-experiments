@@ -44,6 +44,11 @@ set_permissions $CONSUL_CONF_FILE $CONSUL_USER $CONSUL_USER '500'
 echo 'Creating configuration directory...'
 mkdir $CONSUL_CONF_DIR
 set_permissions $CONSUL_CONF_DIR $CONSUL_USER $CONSUL_USER '500'
+
+# data directory
+echo 'Creating data directory...'
+mkdir $CONSUL_DATA_DIR
+set_permissions $CONSUL_DATA_DIR $CONSUL_USER $CONSUL_USER '700'
   
 # log file
 echo 'Creating log file...'
