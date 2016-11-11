@@ -33,7 +33,8 @@ useradd $CONSUL_USER
 # download, unarchive and copy consul to proper path
 echo 'Downloading and copying Consul...'
 wget "https://releases.hashicorp.com/consul/0.7.0/$CONSUL_ARCHIVE"
-unzip $CONSUL_ARCHIVE -d $CONSUL_PATH
+mv $CONSUL_ARCHIVE ~/
+unzip ~/$CONSUL_ARCHIVE -d $CONSUL_PATH
 set_permissions "$CONSUL_PATH/consul" $CONSUL_USER $CONSUL_USER '500'
 
 # main configuration file
