@@ -23,6 +23,18 @@ function set_permissions {
 }
 
 
+# default parameters
+
+if [[ -z $AGENT_ID ]];
+then
+        AGENT_ID='1'
+fi
+
+if [[ -z $DC_SIZE ]];
+then
+        DC_SIZE='1'
+fi
+
 # load configuration
 . conf.sh
 
@@ -39,7 +51,7 @@ set_permissions "$CONSUL_PATH/consul" $CONSUL_USER $CONSUL_USER '500'
 
 # main configuration file
 echo 'Creating configuration file...'
-mkdir $CONSUL_CONF_FILE
+touch $CONSUL_CONF_FILE
 set_permissions $CONSUL_CONF_FILE $CONSUL_USER $CONSUL_USER '500'
 # configuration directory
 echo 'Creating configuration directory...'
@@ -55,4 +67,11 @@ set_permissions $CONSUL_DATA_DIR $CONSUL_USER $CONSUL_USER '700'
 echo 'Creating log file...'
 touch $CONSUL_LOG
 set_permissions $CONSUL_LOG $CONSUL_USER $CONSUL_USER '700'
+
+# get configuration, substitute parameters, write conf file
+conf=$(cat ./conf/consul-server.sh)
+conf="${conf/'::agent_id::'/$AGENT_ID}"
+conf="${conf/'::dc_size::'/$DC_SIZE}"
+conf="${conf/'::datadir::'/$CONSUL_DATA_DIR}"
+$conf > $CONSUL_CONF_FILE
 

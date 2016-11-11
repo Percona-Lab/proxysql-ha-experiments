@@ -1,0 +1,13 @@
+{
+	"datacenter": "dc1",
+	"data_dir": "::datadir::",
+	"log_level": "DEBUG",
+	"node_name": "server-::agent-id::",
+	"server": true,
+	"ui": true,
+	"bootstrap_expect": ::dc_size::,
+	"client_addr": "0.0.0.0",
+	"dns_config": {
+		"only_passing": true
+ 	}
+}
