@@ -69,7 +69,7 @@ touch $CONSUL_LOG
 set_permissions $CONSUL_LOG $CONSUL_USER $CONSUL_USER '700'
 
 # get configuration, substitute parameters, write conf file
-conf=$(cat ./conf/consul-server.sh)
+conf=$(cat ./conf/consul-server.cnf)
 conf="${conf/'::agent_id::'/$AGENT_ID}"
 conf="${conf/'::dc_size::'/$DC_SIZE}"
 conf="${conf/'::datadir::'/$CONSUL_DATA_DIR}"
