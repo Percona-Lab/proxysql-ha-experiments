@@ -23,19 +23,6 @@ function set_permissions {
 }
 
 
-# default parameters
-
-if [[ -z $AGENT_ID ]];
-then
-        AGENT_ID='1'
-fi
-
-if [[ -z $DC_SIZE ]];
-then
-        DC_SIZE='1'
-fi
-
-
 # load configuration
 . conf.sh
 
@@ -80,6 +67,8 @@ echo "Creating configuration file..."
 conf=$(cat ./conf/consul-server.cnf)
 conf="${conf/'::agent_id::'/$AGENT_ID}"
 conf="${conf/'::dc_size::'/$DC_SIZE}"
+conf="${conf/'::dc_name::'/$DC_NAME}"
+conf="${conf/'::log_level::'/$LOG_LEVEL}"
 conf="${conf/'::datadir::'/$CONSUL_DATA_DIR}"
 echo $conf > $CONSUL_CONF_FILE
 

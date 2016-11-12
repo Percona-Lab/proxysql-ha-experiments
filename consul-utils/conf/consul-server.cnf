@@ -1,7 +1,7 @@
 {
-	"datacenter": "dc1",
+	"datacenter": "::dc_name::",
 	"data_dir": "::datadir::",
-	"log_level": "DEBUG",
+	"log_level": "::log_level::",
 	"node_name": "server-::agent_id::",
 	"server": true,
 	"ui": true,
