@@ -35,11 +35,13 @@ then
         DC_SIZE='1'
 fi
 
+
 # load configuration
 . conf.sh
 
 
 # create consul user
+echo "Creting user $CONSUL_USER..."
 useradd $CONSUL_USER
 
 # download, unarchive and copy consul to proper path
@@ -69,6 +71,7 @@ touch $CONSUL_LOG
 set_permissions $CONSUL_LOG $CONSUL_USER $CONSUL_USER '700'
 
 # get configuration, substitute parameters, write conf file
+echo "Creating configuration file..."
 conf=$(cat ./conf/consul-server.cnf)
 conf="${conf/'::agent_id::'/$AGENT_ID}"
 conf="${conf/'::dc_size::'/$DC_SIZE}"
