@@ -16,6 +16,7 @@ CONSUL_DATA_DIR='/var/consul'
 # stdout and stderr will be redirected here
 CONSUL_LOG='/var/log/consul.log'
 
+
 #  Consul Parameters
 #  =================
 
