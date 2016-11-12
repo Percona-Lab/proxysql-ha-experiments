@@ -4,7 +4,7 @@
 # user who runs consul daemon
 CONSUL_USER='consul'
 # file to download from consul site
-CONSUL_ARCHIVE='consul_0.7.0_linux_amd64.zip'
+CONSUL_ARCHIVE='consul_0.7.1_linux_amd64.zip'
 # where consul executable should be placed
 CONSUL_PATH='/usr/local/bin'
 # contains main consul config file

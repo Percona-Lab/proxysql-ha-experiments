@@ -35,7 +35,7 @@ useradd -q $CONSUL_USER
 if [ ! -f ~/$CONSUL_ARCHIVE ];
 then
 	echo 'Downloading and copying Consul...'
-	wget "https://releases.hashicorp.com/consul/0.7.0/$CONSUL_ARCHIVE"
+	wget "https://releases.hashicorp.com/consul/0.7.1/$CONSUL_ARCHIVE"
 	mv $CONSUL_ARCHIVE ~/
 else
 	echo "Not downloading Consul; file exists: $CONSUL_ARCHIVE"
