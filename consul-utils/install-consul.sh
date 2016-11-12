@@ -41,8 +41,8 @@ fi
 
 
 # create consul user
-echo "Creting user $CONSUL_USER..."
-useradd $CONSUL_USER
+echo "Creting user and group $CONSUL_USER..."
+useradd -q $CONSUL_USER
 
 # download, unarchive and copy consul to proper path
 echo 'Downloading and copying Consul...'
