@@ -2,7 +2,7 @@
 	"datacenter": "dc1",
 	"data_dir": "::datadir::",
 	"log_level": "DEBUG",
-	"node_name": "server-::agent-id::",
+	"node_name": "server-::agent_id::",
 	"server": true,
 	"ui": true,
 	"bootstrap_expect": ::dc_size::,
