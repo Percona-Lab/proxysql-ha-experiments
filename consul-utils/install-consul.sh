@@ -73,5 +73,5 @@ conf=$(cat ./conf/consul-server.sh)
 conf="${conf/'::agent_id::'/$AGENT_ID}"
 conf="${conf/'::dc_size::'/$DC_SIZE}"
 conf="${conf/'::datadir::'/$CONSUL_DATA_DIR}"
-$conf > $CONSUL_CONF_FILE
+echo $conf > $CONSUL_CONF_FILE
 
