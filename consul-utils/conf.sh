@@ -26,6 +26,9 @@ AGENT_ID='1'
 DC_NAME='dc1'
 # datacenter size at startup
 DC_SIZE='1'
+# on bootstrap, join this node
+# leave empty for the first node
+JOIN_NODE=''
 # log verbosity
 LOG_LEVEL='DEBUG'
 
