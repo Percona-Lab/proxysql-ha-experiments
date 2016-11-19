@@ -1,3 +1,8 @@
+# This file can be used to set custom Consul paths and configuration.
+# There is no other way to change these settings, by design.
+# Don't delete variables from this file.
+
+
 #  Paths
 #  =====
 
